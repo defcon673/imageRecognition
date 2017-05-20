@@ -83,9 +83,12 @@ def makeResultImage(prediction):
     x = 0
     y = 0
     for value in brights:
-        cv2.rectangle(blank_image, (int(x), int(x + (32 // global_multiplicator))), (int(y), int(32 // global_multiplicator)), (0, 0, round(value)), 3)
-        x = x + (32 / global_multiplicator)
-        y = y + (32 / global_multiplicator)
+        cv2.rectangle(blank_image, (int(x), int(y)), (int(x + (32 // global_multiplicator)), int(y + 32 // global_multiplicator)), (0, 0, round(value)), 3)
+        if (x >= height_global * global_multiplicator):
+            x = 0
+            y = y + (32 / global_multiplicator)
+        else:
+            x = x + (32 / global_multiplicator)
 
     img = cv2.imread(filepath, 1)
     resised_res = cv2.resize(blank_image, (width_original, height_original),
