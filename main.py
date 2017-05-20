@@ -10,6 +10,11 @@ dataset = makeDataset(filepath)
 #dataset = numpy.load("sources/dataset.npy")
 prediction = recognizeImage(dataset)
 
-print(prediction)
+rounded = [round(x) for x in prediction]
+print(rounded)
+
+makeResultImage(prediction)
+
+#print(prediction)
 
 #create "heatmap"
