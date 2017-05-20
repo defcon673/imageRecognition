@@ -1,13 +1,15 @@
 from network import *
+from imageHandler import *
 import cv2
 
 #load image for recognition and make dataset
-im = cv2.imread("image/image1.bmp", 1)
-
+filepath = "image/image1.bmp"
+dataset = makeDataset(filepath)
 
 #recognize image
-dataset = numpy.load("sources/dataset.npy")
+#dataset = numpy.load("sources/dataset.npy")
 prediction = recognizeImage(dataset)
+
 print(prediction)
 
 #create "heatmap"

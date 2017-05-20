@@ -66,4 +66,5 @@ def recognizeImage(dataset = 'sources/dataset.npy'):
     # calculate predictions
     predictions = model.predict(dataset)
     #results in predictions[0]
-    return predictions[0]
+    result = [x[0] for x in predictions]
+    return result
