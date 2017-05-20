@@ -7,7 +7,6 @@ from keras.utils import np_utils
 from keras.optimizers import SGD
 import keras
 import numpy
-from customlayers import *
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='3'
