@@ -2,8 +2,6 @@ import cv2
 import numpy
 import pickle
 
-global_multiplicator = 8    #must be divider for 32
-
 datafile = 'sources/dump'
 height_original = 1
 height_global = 1
@@ -15,14 +13,14 @@ windowsize_r = 32
 windowsize_c = 32
 
 def roundTo32(num):
-    result = num // 32 + 32
-    delta = result - num % 32
+    result = (num // 32) * 32 + 32
+    delta = result - num
     return result, delta
 
 def Split(img):
     imageList = []
     for r in range(0, img.shape[0] - windowsize_r, windowsize_r):
-        for c in range(0, img.shape[0] - windowsize_c, windowsize_c):
+        for c in range(0, img.shape[1] - windowsize_c, windowsize_c):
             window = img[r:r + windowsize_r, c:c + windowsize_c]
             imageList.append(window)
 
@@ -53,7 +51,10 @@ def makeDataset(filepath):
     pickle.dump(height_original, f)
     pickle.dump(height_global, f)
 
-    res = cv2.resize(img, (width_global * global_multiplicator, height_global * global_multiplicator), interpolation=cv2.INTER_CUBIC)
+    res = cv2.resize(img,
+                     (width_global,
+                      height_global),
+                     interpolation=cv2.INTER_CUBIC)
     cv2.imwrite("resized.png", res)
     result = Split(res)
 
@@ -75,25 +76,26 @@ def makeResultImage(prediction):
     height_original = pickle.load(f)
     height_global = pickle.load(f)
 
-
     brights = makeBrightValues(prediction)
-
     blank_image = numpy.zeros((height_global, width_global, 3), numpy.uint8)
 
     x = 0
     y = 0
     for value in brights:
-        cv2.rectangle(blank_image, (int(x), int(y)), (int(x + (32 // global_multiplicator)), int(y + 32 // global_multiplicator)), (0, 0, round(value)), 3)
-        if (x >= height_global * global_multiplicator):
+        cv2.rectangle(blank_image, (int(x), int(y)),
+                      (int(x + 32), int(y + 32)),
+                      (0, 0, round(value)), cv2.FILLED)
+        x += 32
+        if x >= blank_image.shape[1] - 32:
             x = 0
-            y = y + (32 / global_multiplicator)
-        else:
-            x = x + (32 / global_multiplicator)
+            y += 32
+
+    cv2.imwrite('heatmap.png', blank_image)
 
     img = cv2.imread(filepath, 1)
-    resised_res = cv2.resize(blank_image, (width_original, height_original),
+    resised_res = cv2.resize(blank_image, (img.shape[1], img.shape[0]),
                      interpolation=cv2.INTER_CUBIC)
-    res = cv2.addWeighted(img, 0.7, resised_res, 0.3, 0)
+    res = cv2.addWeighted(img, 0.6, resised_res, 0.4, 0)
     cv2.imwrite("result.png", res)
 
 
