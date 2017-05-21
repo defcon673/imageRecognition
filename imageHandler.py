@@ -11,6 +11,7 @@ width_global = 1
 width_delta = 1
 windowsize_r = 32
 windowsize_c = 32
+cutoff_value = 256 * 0.5
 
 def roundTo32(num):
     result = (num // 32) * 32 + 32
@@ -55,7 +56,6 @@ def makeDataset(filepath):
                      (width_global,
                       height_global),
                      interpolation=cv2.INTER_CUBIC)
-    cv2.imwrite("resized.png", res)
     result = Split(res)
 
     return result
@@ -84,7 +84,7 @@ def makeResultImage(prediction):
     for value in brights:
         cv2.rectangle(blank_image, (int(x), int(y)),
                       (int(x + 32), int(y + 32)),
-                      (0, 0, round(value)), cv2.FILLED)
+                      ((0, 0, round(value)) if value > cutoff_value  else (255, 255, 255)), cv2.FILLED)
         x += 32
         if x >= blank_image.shape[1] - 32:
             x = 0
@@ -95,7 +95,7 @@ def makeResultImage(prediction):
     img = cv2.imread(filepath, 1)
     resised_res = cv2.resize(blank_image, (img.shape[1], img.shape[0]),
                      interpolation=cv2.INTER_CUBIC)
-    res = cv2.addWeighted(img, 0.6, resised_res, 0.4, 0)
+    res = cv2.addWeighted(img, 0.7, resised_res, 0.3, 0)
     cv2.imwrite("result.png", res)
 
 

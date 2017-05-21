@@ -15,10 +15,10 @@ prediction = recognizeImage(dataset)
 rounded = [round(x) for x in prediction]
 print(rounded)
 
+#create "heatmap"
 makeResultImage(prediction)
 
 stop = time.time()
 #print(prediction)
 difference = stop - start
 print ("execution time: " + str(difference))
-#create "heatmap"
