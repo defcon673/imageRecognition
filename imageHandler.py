@@ -79,24 +79,27 @@ def makeResultImage(prediction):
     brights = makeBrightValues(prediction)
     blank_image = numpy.zeros((height_global, width_global, 3), numpy.uint8)
 
-    x = 0
-    y = 0
+    x = 16
+    y = 16
     for value in brights:
-        cv2.rectangle(blank_image, (int(x), int(y)),
-                      (int(x + 32), int(y + 32)),
-                      (round(value), round(value), round(value)), cv2.FILLED)
+        cv2.circle(blank_image, (int(x), int(y)), 22, ((round(value), round(value), round(value)) if value > cutoff_value else (0, 0, 0)), cv2.FILLED)
+
+        # cv2.rectangle(blank_image, (int(x), int(y)),
+        #               (int(x + 32), int(y + 32)),
+        #               ((round(value), round(value), round(value)) if value > cutoff_value else (0, 0, 0)), cv2.FILLED)
         x += 32
         if x >= blank_image.shape[1] - 32:
             x = 0
             y += 32
 
     im_gray = cv2.cvtColor(blank_image, cv2.COLOR_RGB2GRAY)
-    im_color = cv2.applyColorMap(im_gray, cv2.COLORMAP_JET)
+    heatmap_blur = cv2.blur(im_gray, (48, 48))
+    heatmap_color = cv2.applyColorMap(heatmap_blur, cv2.COLORMAP_JET)
 
-    cv2.imwrite('heatmap.png', im_color)
+    cv2.imwrite('heatmap.png', heatmap_color)
 
     img = cv2.imread(filepath, 1)
-    resized_res = cv2.resize(im_color, (img.shape[1], img.shape[0]),
+    resized_res = cv2.resize(heatmap_color, (img.shape[1], img.shape[0]),
                      interpolation=cv2.INTER_CUBIC)
     res = cv2.addWeighted(img, 0.7, resized_res, 0.3, 0)
     cv2.imwrite("result.png", res)
