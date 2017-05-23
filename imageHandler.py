@@ -79,10 +79,20 @@ def makeResultImage(prediction):
     brights = makeBrightValues(prediction)
     blank_image = numpy.zeros((height_global, width_global, 3), numpy.uint8)
 
+    max_value = 0
+    for value in brights:
+        if value > max_value:
+            max_value = value
+
     x = 16
     y = 16
     for value in brights:
-        cv2.circle(blank_image, (int(x), int(y)), 22, ((round(value), round(value), round(value)) if value > cutoff_value else (0, 0, 0)), cv2.FILLED)
+        cv2.circle(blank_image, (int(x), int(y)), 22,
+                   ((round(255 / max_value * value),
+                     round(255 / max_value * value),
+                     round(255 / max_value * value)) if value > cutoff_value
+                    else (0, 0, 0)),
+                   cv2.FILLED)
 
         # cv2.rectangle(blank_image, (int(x), int(y)),
         #               (int(x + 32), int(y + 32)),
