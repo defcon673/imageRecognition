@@ -3,9 +3,6 @@ from keras.models import Sequential, Model
 from keras.layers import Flatten, Dense, Dropout, Reshape, Permute, Activation, \
     Input, merge
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
-from keras.utils import np_utils
-from keras.optimizers import SGD
-import keras
 import numpy
 
 import os
@@ -17,7 +14,7 @@ def recognizeImage(dataset = 'sources/dataset.npy'):
 # fix random seed for reproducibility
     seed = 1488
     numpy.random.seed(seed)
-
+    print("Recognition is started")
     # split into input (X) and output (Y) variables
     num_classes = 2 #number of labels
 
@@ -58,13 +55,9 @@ def recognizeImage(dataset = 'sources/dataset.npy'):
     # Compile model
     model.load_weights(weights_path)
 
-    #model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-    #print(model.summary())
-
-    # Fit the model
-    #model.fit(X, labels, nb_epoch=30, batch_size=32,  verbose=1)
     # calculate predictions
     predictions = model.predict(dataset)
     #results in predictions[0]
     result = [x[0] for x in predictions]
+    print("Recognition is ended")
     return result

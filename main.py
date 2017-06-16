@@ -5,12 +5,14 @@ import cv2
 
 start = time.time()
 #load image for recognition and make dataset
-filepath = "image/image1.bmp"
+filepath = "image/image3.bmp"
+print("Load image for recognizing " + filepath)
 dataset = makeDataset(filepath)
 
 #recognize image
-#dataset = numpy.load("sources/dataset.npy")
+print("Start recognizing at " + str(time.time() - start))
 prediction = recognizeImage(dataset)
+print("Recognizing ended at " + str(time.time() - start))
 
 rounded = [round(x) for x in prediction]
 print(rounded)
@@ -21,4 +23,4 @@ makeResultImage(prediction)
 stop = time.time()
 #print(prediction)
 difference = stop - start
-print ("execution time: " + str(difference))
+print("Total execution time: " + str(difference))

@@ -93,10 +93,6 @@ def makeResultImage(prediction):
                      round(255 / max_value * value)) if value > cutoff_value
                     else (0, 0, 0)),
                    cv2.FILLED)
-
-        # cv2.rectangle(blank_image, (int(x), int(y)),
-        #               (int(x + 32), int(y + 32)),
-        #               ((round(value), round(value), round(value)) if value > cutoff_value else (0, 0, 0)), cv2.FILLED)
         x += 32
         if x >= blank_image.shape[1] - 32:
             x = 0
